@@ -9,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.core.os.bundleOf
 import androidx.navigation.fragment.findNavController
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
@@ -16,6 +17,7 @@ import com.google.android.material.chip.Chip
 import com.payment.taskmanager.R
 import com.payment.taskmanager.data.db.entity.TaskNote
 import com.payment.taskmanager.databinding.FragmentAddnoteBinding
+import com.payment.taskmanager.ui.map.SimplePlacePicker
 import org.koin.android.ext.android.inject
 import pub.devrel.easypermissions.AppSettingsDialog
 import pub.devrel.easypermissions.EasyPermissions
@@ -52,7 +54,7 @@ class AddNoteFragment : Fragment(R.layout.fragment_addnote), EasyPermissions.Per
         super.onViewCreated(view, savedInstanceState)
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity())
 
-        getLocation()
+        requestLocationPermission()
 
 
 
@@ -63,6 +65,10 @@ class AddNoteFragment : Fragment(R.layout.fragment_addnote), EasyPermissions.Per
     }
 
     private fun initView() {
+
+        parentFragmentManager.setFragmentResultListener(SimplePlacePicker.REQUEST_ADDRESS, this) { key, bundle ->
+            binding.lblAddress.text = bundle.getString(SimplePlacePicker.SELECTED_ADDRESS)
+        }
 
         binding.apply {
 
@@ -75,21 +81,33 @@ class AddNoteFragment : Fragment(R.layout.fragment_addnote), EasyPermissions.Per
             binding.lblDueDate.setOnClickListener {
                 showDatePickerDialog()
             }
+            binding.lblAddress.setOnClickListener {
+
+                val bundle = bundleOf(
+                    SimplePlacePicker.API_KEY to "AIzaSyBhvoEMjsFBGnOnrnqEP2o3H_5QHk6BDyU"
+                )
+
+                findNavController().navigate(R.id.action_addNoteFragment_to_mapFragment,bundle)
+            }
 
             // Done
             imgDone.setOnClickListener {
-                val likesDao = TaskNote(
-                    title = binding.etNoteTitle.text.toString(),
-                    description = binding.etNoteDesc.text.toString(),
-                    date = currentTime?:"",
-                    dueDate = binding.lblDueDate.text.toString(),
-                    level = priority,
-                    status = "Pending",
-                    location = if (binding.lblLocation.text.toString().isEmpty())"" else binding.lblLocation.text.toString(),
-                )
-                viewModel.updateUser(likesDao)
+                if (valide()) {
+                    val likesDao = TaskNote(
+                        title = binding.etNoteTitle.text.toString(),
+                        description = binding.etNoteDesc.text.toString(),
+                        date = currentTime ?: "",
+                        dueDate = binding.lblDueDate.text.toString(),
+                        level = priority,
+                        status = "Pending",
+                        location = if (binding.lblAddress.text.toString()
+                                .isEmpty()
+                        ) "" else binding.lblAddress.text.toString(),
+                    )
+                    viewModel.updateUser(likesDao)
 
-                findNavController().navigate(R.id.action_addNoteFragment_to_congratsFragment)
+                    findNavController().navigate(R.id.action_addNoteFragment_to_congratsFragment)
+                }
             }
 
             // Back Button
@@ -103,42 +121,7 @@ class AddNoteFragment : Fragment(R.layout.fragment_addnote), EasyPermissions.Per
 
     }
 
-    private fun getLocation() {
-        if (hasLocationPermission()) {
-            fusedLocationClient.lastLocation
-                .addOnSuccessListener { location : Location? ->
 
-                    if (location != null) {
-                        getAddress(location)
-                    } else {
-                        Toast.makeText(requireContext(), "No location found", Toast.LENGTH_SHORT).show()
-                    }
-                }
-        } else {
-            requestLocationPermission()
-        }
-    }
-
-    private fun getAddress(location: Location) {
-        val geocoder = Geocoder(requireActivity(), Locale.getDefault())
-        try {
-            val addresses = geocoder.getFromLocation(
-                location.latitude,
-                location.longitude,
-                1
-            )
-            if (addresses?.isNotEmpty() == true) {
-                val address = addresses[0]
-                val addressText = "${address.getAddressLine(0)}"
-                binding.lblLocation.text = addressText
-            } else {
-                binding.lblLocation.text = "Address not found"
-            }
-        } catch (e: Exception) {
-            e.printStackTrace()
-            binding.lblLocation.text = "Cannot get address"
-        }
-    }
 
     private fun hasLocationPermission(): Boolean {
         return EasyPermissions.hasPermissions(
@@ -168,7 +151,6 @@ class AddNoteFragment : Fragment(R.layout.fragment_addnote), EasyPermissions.Per
 
     override fun onPermissionsGranted(requestCode: Int, perms: MutableList<String>) {
         if (requestCode == LOCATION_PERMISSION_REQUEST_CODE) {
-            getLocation()
         }
     }
 
@@ -222,6 +204,24 @@ class AddNoteFragment : Fragment(R.layout.fragment_addnote), EasyPermissions.Per
 
             }
         }
+    }
+
+    private fun valide():Boolean{
+        if (binding.etNoteTitle.text.toString().isNullOrEmpty()){
+            Toast.makeText(requireContext(), "Please enter title", Toast.LENGTH_SHORT).show()
+            return false
+        }else if (binding.etNoteDesc.text.toString().isNullOrEmpty()){
+            Toast.makeText(requireContext(), "Please enter discription", Toast.LENGTH_SHORT).show()
+            return false
+        }else if (binding.lblDueDate.text.toString().isNullOrEmpty()){
+            Toast.makeText(requireContext(), "Please select date", Toast.LENGTH_SHORT).show()
+            return false
+        }else if (binding.lblAddress.text.toString().isNullOrEmpty()){
+            Toast.makeText(requireContext(), "Please select address", Toast.LENGTH_SHORT).show()
+            return false
+        }
+
+        return true
     }
 
 

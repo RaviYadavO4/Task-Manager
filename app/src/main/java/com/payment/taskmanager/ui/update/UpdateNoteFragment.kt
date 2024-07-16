@@ -11,6 +11,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.core.os.bundleOf
 import androidx.navigation.fragment.findNavController
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
@@ -19,6 +20,7 @@ import com.payment.taskmanager.R
 import com.payment.taskmanager.data.db.entity.TaskNote
 import com.payment.taskmanager.databinding.FragmentUpdatenoteBinding
 import com.payment.taskmanager.ui.add.LiveChannelViewModel
+import com.payment.taskmanager.ui.map.SimplePlacePicker
 import org.koin.android.ext.android.inject
 import pub.devrel.easypermissions.AppSettingsDialog
 import pub.devrel.easypermissions.EasyPermissions
@@ -67,11 +69,15 @@ class UpdateNoteFragment : Fragment(R.layout.fragment_updatenote) , EasyPermissi
 
 
 
-        getLocation()
+        requestLocationPermission()
 
     }
 
     private fun initView() {
+
+        parentFragmentManager.setFragmentResultListener(SimplePlacePicker.REQUEST_ADDRESS, this) { key, bundle ->
+            binding.lblAddress.text = bundle.getString(SimplePlacePicker.SELECTED_ADDRESS)
+        }
 
 
         val data = requireArguments().getParcelable<TaskNote>("data")
@@ -79,8 +85,8 @@ class UpdateNoteFragment : Fragment(R.layout.fragment_updatenote) , EasyPermissi
          data?.apply {
              binding.etNoteTitle.setText(title)
              binding.etNoteDesc.setText(description)
-             binding.etNoteDesc.setText(description)
              binding.lblDueDate.setText(dueDate)
+             binding.lblAddress.setText(location)
              priority = level
              status_ = status
 
@@ -104,8 +110,18 @@ class UpdateNoteFragment : Fragment(R.layout.fragment_updatenote) , EasyPermissi
 
             tvDateTime.text = currentTime
 
+
+            binding.lblAddress.setOnClickListener {
+
+                val bundle = bundleOf(
+                    SimplePlacePicker.API_KEY to "AIzaSyBhvoEMjsFBGnOnrnqEP2o3H_5QHk6BDyU"
+                )
+                findNavController().navigate(R.id.action_updateNoteFragment_to_mapFragment,bundle)
+            }
+
             // Done
             imgDone.setOnClickListener {
+                if (valide()){
                 val taskDao = TaskNote(
                     uniqueSlug = data?.uniqueSlug?:0,
                     title = binding.etNoteTitle.text.toString(),
@@ -114,10 +130,11 @@ class UpdateNoteFragment : Fragment(R.layout.fragment_updatenote) , EasyPermissi
                     dueDate = binding.lblDueDate.text.toString(),
                     level = priority,
                     status = status_,
-                    location = if (binding.lblLocation.text.toString().isEmpty())"" else binding.lblLocation.text.toString(),
+                    location = if (binding.lblAddress.text.toString().isEmpty())"" else binding.lblAddress.text.toString(),
                 )
                 viewModel.updateUser(taskDao)
                 findNavController().navigate(R.id.action_updateNoteFragment_to_congratsFragment)
+            }
             }
 
             // Back Button
@@ -137,42 +154,7 @@ class UpdateNoteFragment : Fragment(R.layout.fragment_updatenote) , EasyPermissi
     }
 
 
-    private fun getLocation() {
-        if (hasLocationPermission()) {
-            fusedLocationClient.lastLocation
-                .addOnSuccessListener { location : Location? ->
 
-                    if (location != null) {
-                        getAddress(location)
-                    } else {
-                        Toast.makeText(requireContext(), "No location found", Toast.LENGTH_SHORT).show()
-                    }
-                }
-        } else {
-            requestLocationPermission()
-        }
-    }
-
-    private fun getAddress(location: Location) {
-        val geocoder = Geocoder(requireActivity(), Locale.getDefault())
-        try {
-            val addresses = geocoder.getFromLocation(
-                location.latitude,
-                location.longitude,
-                1
-            )
-            if (addresses?.isNotEmpty() == true) {
-                val address = addresses[0]
-                val addressText = "${address.getAddressLine(0)}"
-                binding.lblLocation.text = addressText
-            } else {
-                binding.lblLocation.text = "Address not found"
-            }
-        } catch (e: Exception) {
-            e.printStackTrace()
-            binding.lblLocation.text = "Cannot get address"
-        }
-    }
 
     private fun hasLocationPermission(): Boolean {
         return EasyPermissions.hasPermissions(
@@ -202,7 +184,7 @@ class UpdateNoteFragment : Fragment(R.layout.fragment_updatenote) , EasyPermissi
 
     override fun onPermissionsGranted(requestCode: Int, perms: MutableList<String>) {
         if (requestCode == LOCATION_PERMISSION_REQUEST_CODE) {
-            getLocation()
+
         }
     }
 
@@ -286,6 +268,24 @@ class UpdateNoteFragment : Fragment(R.layout.fragment_updatenote) , EasyPermissi
 
             }
         }
+    }
+
+    private fun valide():Boolean{
+        if (binding.etNoteTitle.text.toString().isNullOrEmpty()){
+            Toast.makeText(requireContext(), "Please enter title", Toast.LENGTH_SHORT).show()
+            return false
+        }else if (binding.etNoteDesc.text.toString().isNullOrEmpty()){
+            Toast.makeText(requireContext(), "Please enter discription", Toast.LENGTH_SHORT).show()
+            return false
+        }else if (binding.lblDueDate.text.toString().isNullOrEmpty()){
+            Toast.makeText(requireContext(), "Please select date", Toast.LENGTH_SHORT).show()
+            return false
+        }else if (binding.lblAddress.text.toString().isNullOrEmpty()){
+            Toast.makeText(requireContext(), "Please select address", Toast.LENGTH_SHORT).show()
+            return false
+        }
+
+        return true
     }
 
 }

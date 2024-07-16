@@ -145,13 +145,33 @@
         android:layout_marginHorizontal="@dimen/_10sdp"
         android:background="@drawable/bg_trans_black"
         app:layout_constraintTop_toBottomOf="@+id/etNoteDesc"/>
+    <TextView
+        android:id="@+id/lbl_address"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="20sp"
+        android:fontFamily="@font/poppins_bold"
+        android:hint="Select Address"
+        android:drawableStart="@drawable/ic_location"
+        android:paddingStart="@dimen/_13sdp"
+        android:textColor="@color/textBlack"
+        android:textColorHint="@color/textBlack"
+        android:drawableTint="@color/textBlack"
+        android:layout_marginTop="@dimen/_10sdp"
+        android:drawablePadding="@dimen/_8sdp"
+        android:textStyle="bold"
+        app:layout_goneMarginTop="@dimen/_10sdp"
+        android:paddingVertical="@dimen/_10sdp"
+        android:layout_marginHorizontal="@dimen/_10sdp"
+        android:background="@drawable/bg_trans_black"
+        app:layout_constraintTop_toBottomOf="@+id/lbl_due_date"/>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:layout_marginTop="@dimen/_20sdp"
-        app:layout_constraintTop_toBottomOf="@+id/lbl_due_date">
+        app:layout_constraintTop_toBottomOf="@+id/lbl_address">
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

@@ -12,6 +12,8 @@ import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.NavigationUI
 import com.payment.taskmanager.databinding.ActivityMainBinding
 import com.payment.taskmanager.persistence.Prefs
+import com.payment.taskmanager.ui.util.extensions.makeGone
+import com.payment.taskmanager.ui.util.extensions.makeVisible
 import org.koin.android.ext.android.inject
 
 class MainActivity : AppCompatActivity() {
@@ -25,9 +27,23 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
 
-
         val navController = Navigation.findNavController(this, R.id.nav_host_fragment)
-        NavigationUI.setupWithNavController(binding.bottomNav,navController)
+        NavigationUI.setupWithNavController(binding.bottomNav, navController)
+
+        navController.addOnDestinationChangedListener { _, destination, _ ->
+            when (destination.id) {
+                R.id.homeFragment,
+                R.id.dashboardFragment,
+                R.id.settingsFragment -> {
+                    binding.bottomNav.makeVisible()
+                }
+
+                else -> {
+                    binding.bottomNav.makeGone()
+                }
+            }
+
+        }
 
 
     }

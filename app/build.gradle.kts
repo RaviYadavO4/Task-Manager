@@ -77,5 +77,13 @@ dependencies {
     implementation("com.google.code.gson:gson:2.11.0")
 
 
+//    MAP
+    implementation("com.google.android.gms:play-services-maps:19.0.0")
+    implementation("com.google.android.gms:play-services-location:17.0.0")
+    implementation("com.google.android.libraries.places:places:3.5.0")
+    implementation("com.github.mancj:MaterialSearchBar:0.8.5")
+    implementation("com.skyfishjy.ripplebackground:library:1.0.1")
+
+
 
 }
