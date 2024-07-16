@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <color name="white">#FF000000</color>
+    <color name="black">#FFFFFFFF</color>
+
+
+    <color name="lightGreyDark">#4D4C4C</color>
+
+
+    <color name="textBlack">#FFFFFF</color>
+    <color name="textGray">#8E8D8D</color>
+
+    <color name="chip_selected">#121212</color>
+    <color name="chip_unselected">#797979</color>
+
+    <color name="colorDivider">#707070</color>
+</resources>

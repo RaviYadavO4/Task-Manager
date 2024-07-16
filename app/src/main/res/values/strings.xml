@@ -1,0 +1,14 @@
+<resources>
+    <string name="app_name">Task Manager</string>
+    <string name="search_task">Search Task</string>
+
+    <string name="task_title">Task Title</string>
+    <string name="enter_notes_here">Enter Notes Here</string>
+    <string name="input_goal_priority">Select priority for your goal.</string>
+
+    <string name="bottom_bar">bottom bar</string>
+
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+</resources>
