@@ -10,10 +10,10 @@ import android.content.Intent
 import android.text.format.DateFormat
 import android.view.View
 import androidx.core.content.ContextCompat
-import com.example.to_doapp.R
-import com.example.to_doapp.data.TodoItem
-import com.example.to_doapp.receiver.AlarmReceiver
 import com.google.android.material.snackbar.Snackbar
+import com.payment.taskmanager.R
+import com.payment.taskmanager.data.db.entity.TaskNote
+import com.payment.taskmanager.receiver.AlarmReceiver
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -49,16 +49,16 @@ object Util {
         return calendar.timeInMillis >= alarm.timeInMillis
     }
 
-    fun showDatePicker(todoItem: TodoItem?, context: Context, datePickerListener: DatePickerDialog.OnDateSetListener) {
+    fun showDatePicker(todoItem: TaskNote?, context: Context, datePickerListener: DatePickerDialog.OnDateSetListener) {
         val calendar = Calendar.getInstance()
         var mDay = calendar.get(Calendar.DAY_OF_MONTH)
         var mMonth = calendar.get(Calendar.MONTH)
         var mYear = calendar.get(Calendar.YEAR)
 
         if (todoItem != null) {
-            mYear = DateFormat.format("yyyy", todoItem.dueDate).toString().toInt()
-            mMonth = DateFormat.format("MM", todoItem.dueDate).toString().toInt()-1
-            mDay = DateFormat.format("dd", todoItem.dueDate).toString().toInt()
+            mYear = DateFormat.format("yyyy", todoItem.dueDate.toLong()).toString().toInt()
+            mMonth = DateFormat.format("MM", todoItem.dueDate.toLong()).toString().toInt()-1
+            mDay = DateFormat.format("dd", todoItem.dueDate.toLong()).toString().toInt()
         }
         val datePickerDialog = DatePickerDialog(context, R.style.MyDatePicker,
             datePickerListener, mYear, mMonth, mDay
@@ -69,12 +69,12 @@ object Util {
         datePickerDialog.getButton(DatePickerDialog.BUTTON_POSITIVE).setTextColor(ContextCompat.getColor(context, R.color.light_blue))
     }
 
-    fun showTimePicker(todoItem: TodoItem?, context: Context, timePickerListener: TimePickerDialog.OnTimeSetListener) {
+    fun showTimePicker(todoItem: TaskNote?, context: Context, timePickerListener: TimePickerDialog.OnTimeSetListener) {
         val mCalendar = Calendar.getInstance()
         var pickerHour = mCalendar.get(Calendar.HOUR_OF_DAY)
         var pickerMinute = mCalendar.get(Calendar.MINUTE)
         if (todoItem != null) {
-            val formattedTime = formatTimePicker(todoItem.remainderTime)
+            val formattedTime = formatTimePicker(todoItem.dueDate.toLong())
             pickerHour = formattedTime.substring(0, 2).toInt()
             pickerMinute = formattedTime.substring(3, 5).toInt()
         }
@@ -88,7 +88,7 @@ object Util {
     }
 
     @SuppressLint("UnspecifiedImmutableFlag")
-    fun setAlarm(todoItem: TodoItem, context: Context, alarmCalendar: Calendar, view: View) {
+    fun setAlarm(todoItem: TaskNote, context: Context, alarmCalendar: Calendar, view: View) {
         val new = Calendar.getInstance()
         if (alarmCalendar.timeInMillis < new.timeInMillis) {
             Snackbar.make(view, "Set Correct Alarm Time", Snackbar.LENGTH_SHORT).show()
@@ -97,7 +97,7 @@ object Util {
         val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
         val intent = Intent(context, AlarmReceiver::class.java)
         intent.putExtra("todoTitle", todoItem.title)
-        val intentId = todoItem.createdAt
+        val intentId = todoItem.title
         val pendingIntent = PendingIntent.getBroadcast(context, intentId.toInt(),
             intent, PendingIntent.FLAG_UPDATE_CURRENT
         )
@@ -105,11 +105,11 @@ object Util {
     }
 
     @SuppressLint("UnspecifiedImmutableFlag")
-    fun cancelAlarm(todoItem: TodoItem, context: Context) {
+    fun cancelAlarm(todoItem: TaskNote, context: Context) {
         val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
         val intent = Intent(context, AlarmReceiver::class.java)
         intent.putExtra("todoTitle", todoItem.title)
-        val intentId = todoItem.createdAt
+        val intentId = todoItem.title
         val pendingIntent = PendingIntent.getBroadcast(context, intentId.toInt(),
             intent, PendingIntent.FLAG_UPDATE_CURRENT
         )

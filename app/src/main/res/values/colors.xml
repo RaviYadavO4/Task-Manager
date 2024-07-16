@@ -17,6 +17,17 @@
 
 
 
+    <color name="datePickerWindowBackground">#ffffff</color>
+    <color name="datePickerAccent">#FF2F7AF8</color>
+    <color name="datePickerActivated">#FF2F7AF8</color>
+    <color name="datePickerTextColor">#A0A0A0</color>
+    <color name="datePickerTextPrimary">#FF000000</color>
+    <color name="datePickerTextSecondary">#A0A0A0</color>
+
+    <color name="light_blue">#FF2F7AF8</color>
+
+
+
 
 
 

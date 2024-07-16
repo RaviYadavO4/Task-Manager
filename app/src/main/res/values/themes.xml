@@ -32,4 +32,13 @@
         <item name="android:textColor">@drawable/chip_text_color</item>
         <item name="fontFamily">@font/poppins_bold</item>
     </style>
+
+    <style name="MyDatePicker" parent="Theme.AppCompat.Light.Dialog">
+        <item name="colorAccent">@color/datePickerAccent</item>
+        <item name="android:textColor">@color/datePickerTextColor</item>
+        <item name="android:colorControlActivated">@color/datePickerActivated</item>
+        <item name="android:textColorSecondary">@color/datePickerTextSecondary</item>
+        <item name="android:windowBackground">@color/datePickerWindowBackground</item>
+        <item name="android:textColorPrimary">@color/datePickerTextPrimary</item>
+    </style>
 </resources>
