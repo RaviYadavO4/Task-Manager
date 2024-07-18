@@ -26,4 +26,6 @@
     <color name="datePickerTextSecondary">#A0A0A0</color>
 
     <color name="light_blue">#FF2F7AF8</color>
+    <color name="light_green_color">#1FC57A</color>
+    <color name="delete_dialog_color">#333333</color>
 </resources>

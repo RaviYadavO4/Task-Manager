@@ -6,14 +6,17 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.payment.taskmanager.R
 import com.payment.taskmanager.data.db.entity.TaskNote
+import com.payment.taskmanager.databinding.DialogDeleteBinding
 import com.payment.taskmanager.databinding.FragmentHomeBinding
 import com.payment.taskmanager.persistence.Prefs
 import com.payment.taskmanager.ui.add.LiveChannelViewModel
@@ -106,21 +109,23 @@ class HomeFragment : Fragment(R.layout.fragment_home),HomeNoteAdapter.OnReportCl
         )
     }
 
-    private fun deleteTask(reports: TaskNote){
-        val builder = AlertDialog.Builder(requireContext())
-        builder.setTitle("Delete")
-        builder.setMessage("Are you sure delete task")
-        builder.setPositiveButton("OK") { dialog, which ->
+
+    private fun deleteTask(reports: TaskNote) {
+        val binding = DialogDeleteBinding.inflate(layoutInflater)
+        val bottomSheet = BottomSheetDialog(requireContext(), R.style.BottomSheetStyle)
+        bottomSheet.setContentView(binding.root)
+
+        binding.dialogYes.setOnClickListener {
             viewModel.deleteUser(reports.uniqueSlug)
-            dialog.dismiss()
+            bottomSheet.dismiss()
             findNavController().navigate(R.id.action_homeFragment_to_congratsFragment)
-
         }
-        builder.setNegativeButton("Cancel") { dialog, which ->
-        }
-        val dialog = builder.create()
-        dialog.show()
 
+        binding.dialogNo.setOnClickListener {
+            bottomSheet.dismiss()
+        }
+
+        bottomSheet.show()
     }
 
 

@@ -6,4 +6,17 @@
     </style>
 
     <style name="MaterialSearchBarLightStyle" parent="MaterialSearchBarDark"/>
+
+
+    <style name="BottomSheetStyle"
+        parent="Theme.Design.Light.BottomSheetDialog">
+        <item name="bottomSheetStyle">@style/Modal</item>
+
+    </style>
+
+    <style name="Modal"
+        parent="Widget.Design.BottomSheet.Modal">
+        <item name="android:background">@drawable/delte_sheet</item>
+
+    </style>
 </resources>
