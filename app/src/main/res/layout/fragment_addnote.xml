@@ -137,6 +137,7 @@
         android:paddingStart="@dimen/_13sdp"
         android:textColor="@color/textBlack"
         android:textColorHint="@color/textBlack"
+        android:drawableTint="@color/black"
         android:layout_marginTop="@dimen/_10sdp"
         android:drawablePadding="@dimen/_8sdp"
         android:textStyle="bold"

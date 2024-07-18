@@ -19,6 +19,8 @@
     <string name="confirm_dest">Confirm destination</string>
     <string name="failed_select_location">failed to select location please try again</string>
 
+    <string name="strEnable">Enable Dark Mode</string>
+
 
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>

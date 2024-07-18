@@ -1,5 +1,6 @@
 package com.payment.taskmanager
 
+import android.os.Build
 import android.os.Bundle
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -43,6 +44,21 @@ class MainActivity : AppCompatActivity() {
                 }
             }
 
+        }
+
+        val isNightModeOn: Boolean = prefs.getDarkMode()
+        val isFirstStart: Boolean = prefs.getFirstDarkMode()
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P && isFirstStart ){
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
+        } else{
+            when {
+                isNightModeOn -> {
+                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+                } else -> {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+            }
+            }
         }
 
 

@@ -32,28 +32,22 @@ class SettingsFragment : Fragment(R.layout.fragment_settings) {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-       binding.lblChangeTheme.setOnClickListener {
-           if (prefs.getDarkMode()=="Dark"){
-               prefs.setDarkMode("Light")
-               applyTheme(true)
-           }else{
-               prefs.setDarkMode("Dark")
-               applyTheme(false)
-           }
-       }
+        val isNightModeOn: Boolean = prefs.getDarkMode()
+        binding.lblChangeTheme.setOnClickListener {
+            if (isNightModeOn) {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+                prefs.setDarkMode(false)
+                prefs.setFirstDarkMode(false)
+                requireActivity().recreate()
+            } else {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+                prefs.setDarkMode(true)
+                prefs.setFirstDarkMode(false)
+                requireActivity().recreate()
 
-
-    }
-
-    private fun applyTheme(isDarkMode: Boolean) {
-        if (isDarkMode) {
-            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
-
-        } else {
-            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+            }
         }
-        // Recreate the activity for the theme change to take effect
-        requireActivity().recreate()
+
     }
 
 }

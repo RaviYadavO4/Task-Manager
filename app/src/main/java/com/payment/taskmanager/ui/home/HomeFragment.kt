@@ -1,14 +1,14 @@
 package com.payment.taskmanager.ui.home
 
+import android.graphics.Color
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.SearchView
+import android.widget.ImageView
 import androidx.appcompat.app.AlertDialog
-import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.os.bundleOf
+import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -18,6 +18,7 @@ import com.payment.taskmanager.databinding.FragmentHomeBinding
 import com.payment.taskmanager.persistence.Prefs
 import com.payment.taskmanager.ui.add.LiveChannelViewModel
 import org.koin.android.ext.android.inject
+
 
 class HomeFragment : Fragment(R.layout.fragment_home),HomeNoteAdapter.OnReportClickListener {
 
@@ -40,6 +41,8 @@ class HomeFragment : Fragment(R.layout.fragment_home),HomeNoteAdapter.OnReportCl
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initView()
+        val searchIcon: ImageView = binding.searchView.findViewById(androidx.appcompat.R.id.search_mag_icon)
+        searchIcon.setColorFilter(resources.getColor(R.color.black))
 
         binding.fabCreateNoteBtn.setOnClickListener {
             findNavController().navigate(R.id.action_homeFragment_to_addNoteFragment)
@@ -120,16 +123,5 @@ class HomeFragment : Fragment(R.layout.fragment_home),HomeNoteAdapter.OnReportCl
 
     }
 
-    private fun applyTheme(isDarkMode: Boolean) {
-        if (isDarkMode) {
-            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES);
-            prefs.setDarkMode("Dark")
-        } else {
-            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
-            prefs.setDarkMode("Lifht")
-        }
-        // Recreate the activity for the theme change to take effect
-        requireActivity().recreate()
-    }
 
 }
